@@ -1,0 +1,5 @@
+Usual computations with shutdown key: 
+---------------
+ Press 1 to show the shutdown prompt 
+The continue button was clicked, the computation continues.
+The computed result = 15

@@ -1,15 +1,10 @@
 package org.example;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Toolkit;
 import java.io.IOException;
 import java.io.PipedInputStream;
-import java.util.Optional;
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-import javax.swing.WindowConstants;
+import java.util.Scanner;
 import spos.lab1.demo.IntOps;
+import java.util.logging.Logger;
 
 public class Manager {
   Function runnableF;
@@ -20,6 +15,7 @@ public class Manager {
   PipedInputStream inputStreamG = new PipedInputStream();
   int resultF;
   int resultG;
+  private static Logger log = Logger.getLogger(Manager.class.getName());
 
   public Manager(int x, int y) throws IOException {
     this(x, y, IntOps::funcF, IntOps::funcG);
@@ -31,16 +27,6 @@ public class Manager {
 
     threadF = new Thread(runnableF);
     threadG = new Thread(runnableG);
-
-    setShutdownByEscapeKey();
-  }
-
-  void setShutdownByEscapeKey() {
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      public void run() {
-        System.out.println("Cancelling the computation by the escape key.");
-      }
-    });
   }
 
   public void startComputations() throws InterruptedException {
@@ -49,7 +35,8 @@ public class Manager {
           try {
             resultF = inputStreamF.read();
             if (resultF == 0) {
-              runnableG.stopThread();
+              System.out.println("The function F has returned zero value. Stopping the application.");
+              System.exit(0);
             }
             runnableF.stopThread();
           } catch (IOException e) {
@@ -62,7 +49,8 @@ public class Manager {
           try {
             resultG = inputStreamG.read();
             if (resultG == 0) {
-              runnableF.stopThread();
+              System.out.println("The function G has returned zero value. Stopping the application");
+              System.exit(0);
             }
             runnableG.stopThread();
           } catch (IOException e) {
@@ -73,32 +61,17 @@ public class Manager {
     threadF.start();
     threadG.start();
 
+    ShutdownManager.escapeKeyListener();
+
     threadF.join();
     threadG.join();
 
-    int finalResult = Math.min(resultF, resultG);
-    System.out.println("The computed result = " + finalResult);
-    runnableF.stopThread();
-    runnableG.stopThread();
+    System.out.println("The computed result = " + binaryOperation(resultF, resultG));
+    System.exit(0);
   }
 
-  private JTextArea createTextArea(int width, int height, int xPos, int yPos, String text) {
-    JTextArea textArea = new JTextArea();
-    textArea.setBounds(xPos, yPos, width, height);
-    textArea.setText(text);
-    return textArea;
+  private int binaryOperation(int x, int y) {
+    return Math.min(x, y);
   }
 
-  private JFrame initFrame(String text) {
-    JFrame frame = new JFrame("Computation result");
-    frame.setSize(400, 400);
-    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame.setLayout(new FlowLayout());
-    frame.add(createTextArea(200, 200, 10, 10, text));
-    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-    int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
-    int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
-    frame.setLocation(x, y);
-    return frame;
-  }
 }
