@@ -2,7 +2,6 @@ package org.example;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
-import java.util.Scanner;
 import spos.lab1.demo.IntOps;
 import java.util.logging.Logger;
 
@@ -15,7 +14,7 @@ public class Manager {
   PipedInputStream inputStreamG = new PipedInputStream();
   int resultF;
   int resultG;
-  private static Logger log = Logger.getLogger(Manager.class.getName());
+  private static final Logger log = Logger.getLogger(Manager.class.getName());
 
   public Manager(int x, int y) throws IOException {
     this(x, y, IntOps::funcF, IntOps::funcG);
@@ -35,7 +34,8 @@ public class Manager {
           try {
             resultF = inputStreamF.read();
             if (resultF == 0) {
-              System.out.println("The function F has returned zero value. Stopping the application.");
+              System.out.println(
+                  "The function F has returned zero value. Stopping the application.");
               System.exit(0);
             }
             runnableF.stopThread();
@@ -49,7 +49,8 @@ public class Manager {
           try {
             resultG = inputStreamG.read();
             if (resultG == 0) {
-              System.out.println("The function G has returned zero value. Stopping the application");
+              System.out.println(
+                  "The function G has returned zero value. Stopping the application");
               System.exit(0);
             }
             runnableG.stopThread();
@@ -73,5 +74,4 @@ public class Manager {
   private int binaryOperation(int x, int y) {
     return Math.min(x, y);
   }
-
 }
