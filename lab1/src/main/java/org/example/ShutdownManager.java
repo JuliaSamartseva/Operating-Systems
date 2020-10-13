@@ -43,6 +43,7 @@ public class ShutdownManager {
 
   private static void showShutdownPrompt() {
     frame = new JFrame("Shutdown prompt");
+    frame.setAlwaysOnTop(true);
     JPanel panel = new JPanel();
     panel.setLayout(new FlowLayout());
     JLabel label = new JLabel("Shutdown prompt");

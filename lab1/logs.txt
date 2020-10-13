@@ -1,5 +1,4 @@
 Usual computations with shutdown key: 
 ---------------
- Press 1 to show the shutdown prompt 
-The continue button was clicked, the computation continues.
-The computed result = 15
+Press 1 to show the shutdown prompt 
+One of the functions has returned the undefined result. Stopping the application
