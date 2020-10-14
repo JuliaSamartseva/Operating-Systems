@@ -10,23 +10,26 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class ShutdownManager {
-  static JFrame frame;
-  static Timer timer;
+  private static JFrame frame;
+  private static Timer timer;
 
-  public static void shutdownListener() {
+  public static void cancellationKeyListener() {
     Runnable runnable =
         () -> {
           System.out.print("---------------\n" + "Press 1 to stop \n");
           Scanner scanner = new Scanner(System.in);
           int response = scanner.nextInt();
-          if (response == 1) System.exit(0);
+          if (response == 1) {
+            System.out.println("Cancellation key was clicked, stopping the application.");
+            System.exit(0);
+          }
         };
 
     Thread thread = new Thread(runnable);
     thread.start();
   }
 
-  public static void escapeKeyListener() {
+  public static void shutdownPromptListener() {
     Runnable runnable =
         () -> {
           System.out.print("---------------\n" + "Press 1 to show the shutdown prompt \n");
@@ -39,7 +42,7 @@ public class ShutdownManager {
     thread.start();
   }
 
-  static int seconds = 15;
+  private static int seconds = 15;
 
   private static void showShutdownPrompt() {
     frame = new JFrame("Shutdown prompt");
@@ -64,7 +67,7 @@ public class ShutdownManager {
     frame.setVisible(true);
   }
 
-  static JLabel createTimerLabel() {
+  private static JLabel createTimerLabel() {
     JLabel timerLabel = new JLabel();
     timer =
         new Timer(
@@ -85,7 +88,7 @@ public class ShutdownManager {
     return timerLabel;
   }
 
-  static JButton createContinueButton() {
+  private static JButton createContinueButton() {
     JButton continueButton = new JButton("Continue");
     continueButton.addActionListener(
         e -> {
@@ -96,7 +99,7 @@ public class ShutdownManager {
     return continueButton;
   }
 
-  static JButton createCancelButton() {
+  private static JButton createCancelButton() {
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(
         e -> {

@@ -28,7 +28,7 @@ public class Manager {
     threadG = new Thread(runnableG);
   }
 
-  public void startComputations() throws InterruptedException {
+  public void startComputations(Mode mode) throws InterruptedException {
     runnableF.registerListener(
         thread -> {
           try {
@@ -62,7 +62,14 @@ public class Manager {
     threadF.start();
     threadG.start();
 
-    ShutdownManager.escapeKeyListener();
+    switch (mode) {
+      case SHUTDOWN_PROMPT:
+        ShutdownManager.shutdownPromptListener();
+        break;
+      case SPECIAL_KEY_CANCELLATION:
+        ShutdownManager.cancellationKeyListener();
+        break;
+    }
 
     threadF.join();
     threadG.join();
