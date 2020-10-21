@@ -32,13 +32,16 @@ public class Manager {
     runnableF.registerListener(
         thread -> {
           try {
-            resultF = inputStreamF.read();
-            if (resultF == 0) {
-              System.out.println(
-                  "The function F has returned zero value. Stopping the application.");
-              System.exit(0);
+            if (inputStreamF.available() > 0) {
+              resultF = inputStreamF.read();
+              if (resultF == 0) {
+                System.out.println(
+                    "The function F has returned zero value. Stopping the application.");
+                System.exit(0);
+              }
+              runnableF.stopThread();
             }
-            runnableF.stopThread();
+
           } catch (IOException e) {
             e.printStackTrace();
           }
@@ -47,13 +50,15 @@ public class Manager {
     runnableG.registerListener(
         thread -> {
           try {
-            resultG = inputStreamG.read();
-            if (resultG == 0) {
-              System.out.println(
-                  "The function G has returned zero value. Stopping the application");
-              System.exit(0);
+            if (inputStreamG.available() > 0) {
+              resultG = inputStreamG.read();
+              if (resultG == 0) {
+                System.out.println(
+                    "The function G has returned zero value. Stopping the application");
+                System.exit(0);
+              }
+              runnableG.stopThread();
             }
-            runnableG.stopThread();
           } catch (IOException e) {
             e.printStackTrace();
           }
