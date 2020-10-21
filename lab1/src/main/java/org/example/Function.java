@@ -38,10 +38,6 @@ public class Function implements Runnable {
       }
     } catch (InterruptedException | IOException e) {
       e.printStackTrace();
-    } catch (UndefinedResultException | ArrayIndexOutOfBoundsException e) {
-      System.out.println(
-          "One of the functions has returned the undefined result. Stopping the application");
-      System.exit(0);
     }
   }
 

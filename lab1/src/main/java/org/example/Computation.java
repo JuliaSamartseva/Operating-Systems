@@ -1,5 +1,5 @@
 package org.example;
 
 interface Computation {
-  int applyFunction(int x) throws InterruptedException, UndefinedResultException;
+  int applyFunction(int x) throws InterruptedException;
 }
