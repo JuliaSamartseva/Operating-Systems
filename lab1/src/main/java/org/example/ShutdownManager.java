@@ -10,10 +10,31 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class ShutdownManager {
-  private static JFrame frame;
-  private static Timer timer;
+  private static int seconds = 15;
+  private final Mode mode;
+  private final Result result;
+  private JFrame frame;
+  private Timer timer;
 
-  public static void cancellationKeyListener() {
+  public ShutdownManager(Mode mode, Result result) {
+    this.mode = mode;
+    this.result = result;
+    switch (mode) {
+      case SHUTDOWN_PROMPT:
+        frame = new JFrame("Shutdown prompt");
+        shutdownPromptListener();
+        break;
+      case SPECIAL_KEY_CANCELLATION:
+        cancellationKeyListener();
+        break;
+    }
+  }
+
+  public void hidePrompt() {
+    if (mode == Mode.SHUTDOWN_PROMPT) frame.setVisible(false);
+  }
+
+  private void cancellationKeyListener() {
     Runnable runnable =
         () -> {
           System.out.print("---------------\n" + "Press 1 to stop \n");
@@ -29,7 +50,7 @@ public class ShutdownManager {
     thread.start();
   }
 
-  public static void shutdownPromptListener() {
+  private void shutdownPromptListener() {
     Runnable runnable =
         () -> {
           System.out.print("---------------\n" + "Press 1 to show the shutdown prompt \n");
@@ -42,10 +63,7 @@ public class ShutdownManager {
     thread.start();
   }
 
-  private static int seconds = 15;
-
-  private static void showShutdownPrompt() {
-    frame = new JFrame("Shutdown prompt");
+  private void showShutdownPrompt() {
     frame.setAlwaysOnTop(true);
     JPanel panel = new JPanel();
     panel.setLayout(new FlowLayout());
@@ -53,6 +71,14 @@ public class ShutdownManager {
 
     JButton continueButton = createContinueButton();
     JButton cancelButton = createCancelButton();
+    cancelButton.addActionListener(
+        e -> {
+          hidePrompt();
+          System.out.println(
+              "The computation is terminated, because the cancel button was clicked.");
+          printFunctionResultsState();
+          System.exit(0);
+        });
     JLabel timerLabel = createTimerLabel();
 
     panel.add(label);
@@ -67,7 +93,11 @@ public class ShutdownManager {
     frame.setVisible(true);
   }
 
-  private static JLabel createTimerLabel() {
+  private void printFunctionResultsState() {
+    System.out.println(result);
+  }
+
+  private JLabel createTimerLabel() {
     JLabel timerLabel = new JLabel();
     timer =
         new Timer(
@@ -88,7 +118,7 @@ public class ShutdownManager {
     return timerLabel;
   }
 
-  private static JButton createContinueButton() {
+  private JButton createContinueButton() {
     JButton continueButton = new JButton("Continue");
     continueButton.addActionListener(
         e -> {
@@ -99,15 +129,7 @@ public class ShutdownManager {
     return continueButton;
   }
 
-  private static JButton createCancelButton() {
-    JButton cancelButton = new JButton("Cancel");
-    cancelButton.addActionListener(
-        e -> {
-          frame.setVisible(false);
-          System.out.println(
-              "The computation is terminated, because the cancel button was clicked.");
-          System.exit(0);
-        });
-    return cancelButton;
+  private JButton createCancelButton() {
+    return new JButton("Cancel");
   }
 }
