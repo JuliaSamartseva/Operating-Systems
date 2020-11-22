@@ -9,10 +9,6 @@
 
 import java.io.*;
 import java.util.*;
-import sProcess;
-import Common;
-import Results;
-import SchedulingAlgorithm;
 
 public class Scheduling {
 
@@ -23,8 +19,9 @@ public class Scheduling {
   private static Vector processVector = new Vector();
   private static Results result = new Results("null","null",0);
   private static String resultsFile = "Summary-Results";
+  private static int quant = 30;
 
-  private static void Init(String file) {
+  private static void init(String file) {
     File f = new File(file);
     String line;
     String tmp;
@@ -68,9 +65,16 @@ public class Scheduling {
           st.nextToken();
           runtime = Common.s2i(st.nextToken());
         }
+        if (line.startsWith("quant")) {
+          StringTokenizer st = new StringTokenizer(line);
+          st.nextToken();
+          quant = Common.s2i(st.nextToken());
+        }
       }
       in.close();
-    } catch (IOException e) { /* Handle exceptions */ }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private static void debug() {
@@ -79,6 +83,7 @@ public class Scheduling {
     System.out.println("processnum " + processnum);
     System.out.println("meandevm " + meanDev);
     System.out.println("standdev " + standardDev);
+    System.out.println("quant " + quant);
     int size = processVector.size();
     for (i = 0; i < size; i++) {
       sProcess process = (sProcess) processVector.elementAt(i);
@@ -104,7 +109,7 @@ public class Scheduling {
       System.exit(-1);
     }
     System.out.println("Working...");
-    Init(args[0]);
+    init(args[0]);
     if (processVector.size() < processnum) {
       i = 0;
       while (processVector.size() < processnum) {       
@@ -118,7 +123,7 @@ public class Scheduling {
         i++;
       }
     }
-    result = SchedulingAlgorithm.Run(runtime, processVector, result);    
+    result = SchedulingAlgorithm.run(runtime, processVector, result, quant);
     try {
       //BufferedWriter out = new BufferedWriter(new FileWriter(resultsFile));
       PrintStream out = new PrintStream(new FileOutputStream(resultsFile));
@@ -141,7 +146,9 @@ public class Scheduling {
         out.println(process.numblocked + " times");
       }
       out.close();
-    } catch (IOException e) { /* Handle exceptions */ }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   System.out.println("Completed.");
   }
 }
