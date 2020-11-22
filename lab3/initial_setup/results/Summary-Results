@@ -1,0 +1,9 @@
+Scheduling Type: Interactive
+Scheduling Name: Cyclic
+Simulation Run Time: 21
+Mean: 1100
+Standard Deviation: 510
+Process #	CPU Time	IO Blocking	CPU Completed	CPU Blocked
+0		303 (ms)	100 (ms)	303 (ms)	3 times
+1		634 (ms)	500 (ms)	634 (ms)	1 times
+2		634 (ms)	30 (ms)		634 (ms)	21 times
