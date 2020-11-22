@@ -87,8 +87,6 @@ public class SchedulingAlgorithm {
                     + process.ioblocking
                     + " "
                     + process.cpudone
-                    + " "
-                    + process.cpudone
-                    + ")");
+                    + " )");
   }
 }
