@@ -9,12 +9,11 @@ import java.io.*;
 
 public class SchedulingAlgorithm {
 
-  public static Results run(int runtime, Vector processVector, Results result, int quant) {
+  public static Results run(int runtime, Vector processVector, Results result, int quant, String resultsFile) {
     int i = 0;
     int comptime = 0;
     int size = processVector.size();
     int completed = 0;
-    String resultsFile = "Summary-Processes";
 
     Queue<sProcess> processQueue = new LinkedList<sProcess>();
     for (int j = 0; j < processVector.size(); j++) {

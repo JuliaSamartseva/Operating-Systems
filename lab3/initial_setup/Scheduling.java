@@ -20,6 +20,7 @@ public class Scheduling {
   private static Results result = new Results("null","null",0);
   private static String resultsFile = "Summary-Results";
   private static int quant = 30;
+  private static String summaryFile = "Summary-Processes";
 
   private static void init(String file) {
     File f = new File(file);
@@ -38,12 +39,12 @@ public class Scheduling {
           st.nextToken();
           processnum = Common.s2i(st.nextToken());
         }
-        if (line.startsWith("meandev")) {
+        if (line.startsWith("run_time_average")) {
           StringTokenizer st = new StringTokenizer(line);
           st.nextToken();
           meanDev = Common.s2i(st.nextToken());
         }
-        if (line.startsWith("standdev")) {
+        if (line.startsWith("run_time_stddev")) {
           StringTokenizer st = new StringTokenizer(line);
           st.nextToken();
           standardDev = Common.s2i(st.nextToken());
@@ -69,6 +70,16 @@ public class Scheduling {
           StringTokenizer st = new StringTokenizer(line);
           st.nextToken();
           quant = Common.s2i(st.nextToken());
+        }
+        if (line.startsWith("summary_file")) {
+          StringTokenizer st = new StringTokenizer(line);
+          st.nextToken();
+          summaryFile = st.nextToken();
+        }
+        if (line.startsWith("log_file")) {
+          StringTokenizer st = new StringTokenizer(line);
+          st.nextToken();
+          resultsFile = st.nextToken();
         }
       }
       in.close();
@@ -123,9 +134,9 @@ public class Scheduling {
         i++;
       }
     }
-    result = SchedulingAlgorithm.run(runtime, processVector, result, quant);
+    result = SchedulingAlgorithm.run(runtime, processVector, result, quant, summaryFile);
     try {
-      //BufferedWriter out = new BufferedWriter(new FileWriter(resultsFile));
+
       PrintStream out = new PrintStream(new FileOutputStream(resultsFile));
       out.println("Scheduling Type: " + result.schedulingType);
       out.println("Scheduling Name: " + result.schedulingName);
