@@ -1,273 +1,50 @@
 #pragma once
 #include "Token.h"
+#include "DFA.h"
 
 class Lexer {
 public:
-    Lexer(const char* beg) : m_beg{ beg } {}
+    Lexer(const char* beg) : m_beg{ beg }, dfa{0, false} {
+        // Adding DFA state for each of the tokens
+        for (int i = 101; i < 127; i++) {
+            dfa.add_state(i, true);
+        }
+        // TODO: add all token definitions
+        dfa.add_transition(0, '(', toUnderlyingType(Token::Kind::LeftParen));
+        dfa.add_transition(0, '=', toUnderlyingType(Token::Kind::Equal));
+        dfa.add_transition(0, ' ', toUnderlyingType(Token::Kind::Whitespace));
+        dfa.add_transition(toUnderlyingType(Token::Kind::Whitespace), ' ', toUnderlyingType(Token::Kind::Whitespace));
+        
+        for (char c = 'a'; c <= 'z'; c++)
+        {
+            dfa.add_transition(0, c, toUnderlyingType(Token::Kind::Identifier));
+            dfa.add_transition(toUnderlyingType(Token::Kind::Identifier), c, toUnderlyingType(Token::Kind::Identifier));
+        }
+
+        for (char c = '0'; c <= '9'; c++)
+        {
+            dfa.add_transition(toUnderlyingType(Token::Kind::Identifier), c, toUnderlyingType(Token::Kind::Identifier));
+        }
+
+        for (char c = '0'; c <= '9'; c++)
+        {
+            dfa.add_transition(0, c, toUnderlyingType(Token::Kind::Number));
+            dfa.add_transition(toUnderlyingType(Token::Kind::Number), c, toUnderlyingType(Token::Kind::Number));
+        }
+    }
 
     Token next();
 
 private:
-    Token identifier();
-    Token number();
-    Token slash_or_comment();
-    Token atom(Token::Kind);
-
     char peek() const { return *m_beg; }
+    char peek_next() { return *(++m_beg); }
     char get() { return *m_beg++; }
+    bool current_not_null() { 
+        if (*m_beg == '\0') return false;
+        return m_beg != nullptr; 
+    }
 
     const char* m_beg = nullptr;
+    DFA<char> dfa;
 };
 
-bool is_space(char c) {
-    switch (c) {
-    case ' ':
-    case '\t':
-    case '\r':
-    case '\n':
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool is_digit(char c) {
-    switch (c) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool is_identifier_char(char c) {
-    switch (c) {
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case '_':
-        return true;
-    default:
-        return false;
-    }
-}
-
-Token Lexer::atom(Token::Kind kind) { return Token(kind, m_beg++, 1); }
-
-Token Lexer::next() {
-    while (is_space(peek())) get();
-
-    switch (peek()) {
-    case '\0':
-        return Token(Token::Kind::End, m_beg, 1);
-    default:
-        return atom(Token::Kind::Unexpected);
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-        return identifier();
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-        return number();
-    case '(':
-        return atom(Token::Kind::LeftParen);
-    case ')':
-        return atom(Token::Kind::RightParen);
-    case '[':
-        return atom(Token::Kind::LeftSquare);
-    case ']':
-        return atom(Token::Kind::RightSquare);
-    case '{':
-        return atom(Token::Kind::LeftCurly);
-    case '}':
-        return atom(Token::Kind::RightCurly);
-    case '<':
-        return atom(Token::Kind::LessThan);
-    case '>':
-        return atom(Token::Kind::GreaterThan);
-    case '=':
-        return atom(Token::Kind::Equal);
-    case '+':
-        return atom(Token::Kind::Plus);
-    case '-':
-        return atom(Token::Kind::Minus);
-    case '*':
-        return atom(Token::Kind::Asterisk);
-    case '/':
-        return slash_or_comment();
-    case '#':
-        return atom(Token::Kind::Hash);
-    case '.':
-        return atom(Token::Kind::Dot);
-    case ',':
-        return atom(Token::Kind::Comma);
-    case ':':
-        return atom(Token::Kind::Colon);
-    case ';':
-        return atom(Token::Kind::Semicolon);
-    case '\'':
-        return atom(Token::Kind::SingleQuote);
-    case '"':
-        return atom(Token::Kind::DoubleQuote);
-    case '|':
-        return atom(Token::Kind::Pipe);
-    }
-}
-
-Token Lexer::identifier() {
-    const char* start = m_beg;
-    get();
-    while (is_identifier_char(peek())) get();
-    return Token(Token::Kind::Identifier, start, m_beg);
-}
-
-Token Lexer::number() {
-    const char* start = m_beg;
-    get();
-    while (is_digit(peek())) get();
-    return Token(Token::Kind::Number, start, m_beg);
-}
-
-Token Lexer::slash_or_comment() {
-    const char* start = m_beg;
-    get();
-    if (peek() == '/') {
-        get();
-        start = m_beg;
-        while (peek() != '\0') {
-            if (get() == '\n') {
-                return Token(Token::Kind::Comment, start,
-                    std::distance(start, m_beg) - 1);
-            }
-        }
-        return Token(Token::Kind::Unexpected, m_beg, 1);
-    }
-    else {
-        return Token(Token::Kind::Slash, start, 1);
-    }
-}

@@ -4,6 +4,7 @@
 class Token {
 public:
 	enum class Kind {
+		Invalid = 100,
 		Number,
 		Identifier,
 		LeftParen,
@@ -29,12 +30,14 @@ public:
 		Comment,
 		Pipe,
 		End,
+		Whitespace,
 		Unexpected,
 	};
 
 	static std::string toString(Kind kind) {
 		switch (kind)
 		{
+		case Kind::Invalid: return "Invalid token";
 		case Kind::Number: return "Number";
 		case Kind::Identifier: return "Identifier";
 		case Kind::LeftParen: return "Left Parenthesis";
@@ -60,6 +63,7 @@ public:
 		case Kind::Comment: return "Comment";
 		case Kind::Pipe: return "Pipe";
 		case Kind::End: return "End";
+		case Kind::Whitespace: return "Whitespace";
 		case Kind::Unexpected: return "Unexpected";
 		default: return "[unknown token]";
 		}
@@ -98,3 +102,9 @@ private:
 	Kind m_kind{};
 	std::string_view m_lexeme{};
 };
+
+template<typename E>
+constexpr auto toUnderlyingType(E e)
+{
+	return static_cast<typename std::underlying_type<E>::type>(e);
+}
