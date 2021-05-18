@@ -8,11 +8,11 @@
 int main()
 {
 
-    auto code = "x > 323";
+    auto code = "x *= 3.232";
     std::cout << "List of tokens: \n";
     Lexer lex(code);
     for (auto token = lex.next();
-        not token.is_one_of(Token::Kind::End, Token::Kind::Unexpected, Token::Kind::Invalid);
+        not token.is_one_of(Token::Kind::End, Token::Kind::Invalid);
         token = lex.next()) {
         std::cout << "(" << Token::toString(token.kind()) << ", \"" << token.lexeme()
             << "\")\n";

@@ -7,6 +7,7 @@ Token Lexer::next() {
         dfa.input(peek());
         if (dfa.is_accepting() && !dfa.is_accepting(peek_next())) {
             // Found token, returning the result.
+            get();
             return Token((Token::Kind)dfa.state(), start_lexeme, m_beg);
         }
         get();
