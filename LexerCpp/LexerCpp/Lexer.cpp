@@ -1,7 +1,6 @@
 #include "Lexer.h"
 
 Token Lexer::next() {
-   
     dfa.reset();
     const char* start_lexeme = m_beg;
     while (current_not_null()) {
@@ -13,5 +12,6 @@ Token Lexer::next() {
         get();
     }
 
+    if (is_end()) return Token(Token::Kind::End, m_beg, 1);
     return Token((Token::Kind)dfa.state(), start_lexeme, m_beg);
 }

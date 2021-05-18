@@ -7,13 +7,14 @@
 
 int main()
 {
-    auto code = "x = 391 123 = ";
 
+    auto code = "x > 323";
+    std::cout << "List of tokens: \n";
     Lexer lex(code);
     for (auto token = lex.next();
         not token.is_one_of(Token::Kind::End, Token::Kind::Unexpected, Token::Kind::Invalid);
         token = lex.next()) {
-        std::cout << Token::toString(token.kind()) << " |" << token.lexeme()
-            << "|\n";
+        std::cout << "(" << Token::toString(token.kind()) << ", \"" << token.lexeme()
+            << "\")\n";
     }
 }

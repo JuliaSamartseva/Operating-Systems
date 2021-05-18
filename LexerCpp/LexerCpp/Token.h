@@ -104,7 +104,7 @@ private:
 };
 
 template<typename E>
-constexpr auto toUnderlyingType(E e)
+constexpr auto token_to_int(E e)
 {
 	return static_cast<typename std::underlying_type<E>::type>(e);
 }
