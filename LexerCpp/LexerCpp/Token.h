@@ -5,8 +5,22 @@ class Token {
 public:
 	enum class Kind {
 		Invalid = 100,
+		// numeric constants
 		Number,
+		//TODO: add floating point constant
+		//TODO: literals and symbolic constants
+		//TODO: preprocessor directives
+		//TODO: comments
+		//TODO: keywords
+		// identifiers
 		Identifier,
+		//TODO: operators
+		DirectAssignment,
+		AdditionAssignment,
+		SubtractionAssignment,
+		MultiplicationAssignment,
+		DivisionAssignment,
+		// punctuation marks
 		LeftParen,
 		RightParen,
 		LeftSquare,
@@ -15,11 +29,10 @@ public:
 		RightCurly,
 		LessThan,
 		GreaterThan,
-		Equal,
 		Plus,
 		Minus,
-		Asterisk,
-		Slash,
+		Multiply,
+		Divide,
 		Hash,
 		Dot,
 		Comma,
@@ -31,7 +44,6 @@ public:
 		Pipe,
 		End,
 		Whitespace,
-		Unexpected,
 	};
 
 	static std::string toString(Kind kind) {
@@ -48,11 +60,15 @@ public:
 		case Kind::RightCurly: return "Right Curly Parenthesis";
 		case Kind::LessThan: return "Less than";
 		case Kind::GreaterThan: return "Greater than";
-		case Kind::Equal: return "Equal";
+		case Kind::DirectAssignment: return "Direct assignment operator";
+		case Kind::AdditionAssignment: return "Addition assignment operator";
+		case Kind::SubtractionAssignment: return "Substration assignment operator";
+		case Kind::MultiplicationAssignment: return "Multiplication assignment operator";
+		case Kind::DivisionAssignment: return "Division assignment operator";
 		case Kind::Plus: return "Plus";
 		case Kind::Minus: return "Minus";
-		case Kind::Asterisk: return "Multiply";
-		case Kind::Slash: return "Slash";
+		case Kind::Multiply: return "Multiply";
+		case Kind::Divide: return "Divide";
 		case Kind::Hash: return "Hash";
 		case Kind::Dot: return "Dot";
 		case Kind::Comma: return "Comma";
@@ -64,7 +80,6 @@ public:
 		case Kind::Pipe: return "Pipe";
 		case Kind::End: return "End";
 		case Kind::Whitespace: return "Whitespace";
-		case Kind::Unexpected: return "Unexpected";
 		default: return "[unknown token]";
 		}
 	}
