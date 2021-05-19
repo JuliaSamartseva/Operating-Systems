@@ -4,7 +4,7 @@
 class Token {
 public:
 	enum class Kind {
-		Invalid = 100,
+		Invalid = 0,
 		// numeric constants
 		IntegerLiteral,
 		FloatingPointLiteral,
