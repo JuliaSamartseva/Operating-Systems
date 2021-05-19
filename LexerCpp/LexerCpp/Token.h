@@ -6,15 +6,16 @@ public:
 	enum class Kind {
 		Invalid = 100,
 		// numeric constants
-		Number,
-		//TODO: add floating point constant
+		IntegerLiteral,
+		FloatingPointLiteral,
 		//TODO: literals and symbolic constants
 		//TODO: preprocessor directives
 		//TODO: comments
 		//TODO: keywords
 		// identifiers
 		Identifier,
-		//TODO: operators
+		// operators
+		Equals,
 		DirectAssignment,
 		AdditionAssignment,
 		SubtractionAssignment,
@@ -44,13 +45,15 @@ public:
 		Pipe,
 		End,
 		Whitespace,
+		NewLine
 	};
 
 	static std::string toString(Kind kind) {
 		switch (kind)
 		{
 		case Kind::Invalid: return "Invalid token";
-		case Kind::Number: return "Number";
+		case Kind::IntegerLiteral: return "Integer literal";
+		case Kind::FloatingPointLiteral: return "Floating point literal";
 		case Kind::Identifier: return "Identifier";
 		case Kind::LeftParen: return "Left Parenthesis";
 		case Kind::RightParen: return "Right Parenthesis";
@@ -65,6 +68,7 @@ public:
 		case Kind::SubtractionAssignment: return "Substration assignment operator";
 		case Kind::MultiplicationAssignment: return "Multiplication assignment operator";
 		case Kind::DivisionAssignment: return "Division assignment operator";
+		case Kind::Equals: return "Equals";
 		case Kind::Plus: return "Plus";
 		case Kind::Minus: return "Minus";
 		case Kind::Multiply: return "Multiply";
@@ -80,6 +84,7 @@ public:
 		case Kind::Pipe: return "Pipe";
 		case Kind::End: return "End";
 		case Kind::Whitespace: return "Whitespace";
+		case Kind::NewLine: return "New line";
 		default: return "[unknown token]";
 		}
 	}

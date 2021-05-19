@@ -6,7 +6,7 @@ class Lexer {
 public:
     Lexer(const char* beg) : m_beg{ beg }, dfa{0, false} {
         // Adding DFA state for each of the tokens
-        for (int i = 101; i < 131; i++) {
+        for (int i = 101; i < 133; i++) {
             dfa.add_state(i, true);
         }
         // all one-symbol tokens
@@ -31,6 +31,7 @@ public:
         dfa.add_transition(0, '\'', token_to_int(Token::Kind::SingleQuote));
         dfa.add_transition(0, '"', token_to_int(Token::Kind::DoubleQuote));
         dfa.add_transition(0, ' ', token_to_int(Token::Kind::Whitespace));
+        dfa.add_transition(0, '\n', token_to_int(Token::Kind::NewLine));
 
         // Handle several whitespaces
         dfa.add_transition(token_to_int(Token::Kind::Whitespace), ' ', token_to_int(Token::Kind::Whitespace));
@@ -40,6 +41,7 @@ public:
         dfa.add_transition(token_to_int(Token::Kind::Minus), '=', token_to_int(Token::Kind::SubtractionAssignment));
         dfa.add_transition(token_to_int(Token::Kind::Multiply), '=', token_to_int(Token::Kind::MultiplicationAssignment));
         dfa.add_transition(token_to_int(Token::Kind::Divide), '=', token_to_int(Token::Kind::DivisionAssignment));
+        dfa.add_transition(token_to_int(Token::Kind::DirectAssignment), '=', token_to_int(Token::Kind::Equals));
     
         // Handle identifiers as a set of chars/numbers
         for (char c = 'a'; c <= 'z'; c++) {
@@ -51,9 +53,12 @@ public:
         }
 
         // Handle int numbers as a set of digits
+        // Floating point literals
         for (char c = '0'; c <= '9'; c++) {
-            dfa.add_transition(0, c, token_to_int(Token::Kind::Number));
-            dfa.add_transition(token_to_int(Token::Kind::Number), c, token_to_int(Token::Kind::Number));
+            dfa.add_transition(0, c, token_to_int(Token::Kind::IntegerLiteral));
+            dfa.add_transition(token_to_int(Token::Kind::IntegerLiteral), '.', token_to_int(Token::Kind::FloatingPointLiteral));
+            dfa.add_transition(token_to_int(Token::Kind::FloatingPointLiteral), c, token_to_int(Token::Kind::FloatingPointLiteral));
+            dfa.add_transition(token_to_int(Token::Kind::IntegerLiteral), c, token_to_int(Token::Kind::IntegerLiteral));
         }
     }
 
