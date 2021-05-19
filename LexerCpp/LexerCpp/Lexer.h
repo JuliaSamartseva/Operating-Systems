@@ -1,12 +1,14 @@
 #pragma once
 #include "Token.h"
 #include "DFA.h"
+#include <optional>
+#include <string_view>
 
 class Lexer {
 public:
     Lexer(const char* beg) : m_beg{ beg }, dfa{0, false} {
         // Adding DFA state for each of the tokens
-        for (int i = 101; i < 133; i++) {
+        for (int i = 1; i < 34; i++) {
             dfa.add_state(i, true);
         }
         // all one-symbol tokens
@@ -75,6 +77,8 @@ private:
     bool is_end() {
         return *m_beg == '\0';
     }
+    Token get_token_from_dfa(char* start_lexeme, char* end_lexeme);
+    std::optional<Token::Kind> check_if_reserved_word(std::string_view input);
 
     const char* m_beg = nullptr;
     DFA<char> dfa;

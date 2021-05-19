@@ -3,6 +3,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <string>
 
 using namespace std;
 
@@ -22,6 +23,7 @@ public:
 
 
 private:
+	int last_state;
 	int m_initial;
 	int m_state;
 	set<int> m_states;
