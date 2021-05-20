@@ -9,9 +9,10 @@ public:
 		IntegerLiteral,
 		FloatingPointLiteral,
 		//TODO: literals and symbolic constants
-		//TODO: preprocessor directives
+		// preprocessor directives
+		PreprocessorDirectives,
 		//TODO: comments
-		//TODO: keywords
+		// keywords
 		Keyword,
 		// identifiers
 		Identifier,
@@ -87,6 +88,7 @@ public:
 		case Kind::Whitespace: return "Whitespace";
 		case Kind::NewLine: return "New line";
 		case Kind::Keyword: return "Keyword";
+		case Kind::PreprocessorDirectives: return "Preprocessor directive";
 		default: return "[unknown token]";
 		}
 	}
