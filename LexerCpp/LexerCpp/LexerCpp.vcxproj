@@ -152,11 +152,13 @@
     <ClCompile Include="DFA.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="LexerCpp.cpp" />
+    <ClCompile Include="Trie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DFA.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="Token.h" />
+    <ClInclude Include="Trie.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

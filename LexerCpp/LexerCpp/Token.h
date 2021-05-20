@@ -12,6 +12,7 @@ public:
 		//TODO: preprocessor directives
 		//TODO: comments
 		//TODO: keywords
+		Keyword,
 		// identifiers
 		Identifier,
 		// operators
@@ -85,6 +86,7 @@ public:
 		case Kind::End: return "End";
 		case Kind::Whitespace: return "Whitespace";
 		case Kind::NewLine: return "New line";
+		case Kind::Keyword: return "Keyword";
 		default: return "[unknown token]";
 		}
 	}
