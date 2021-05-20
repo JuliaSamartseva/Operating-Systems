@@ -8,7 +8,7 @@
 int main()
 {
 
-    auto code = "const  x == 3.232 ";
+    auto code = "#if  x == 3.232 ";
     std::cout << "List of tokens: \n";
     Lexer lex(code);
     for (auto token = lex.next();

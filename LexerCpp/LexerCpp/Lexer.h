@@ -10,7 +10,7 @@ class Lexer {
 public:
 	Lexer(const char* beg) : m_beg{ beg }, dfa{ 0, false } {
 		// Adding DFA state for each of the tokens
-		for (int i = 1; i < 35; i++) {
+		for (int i = 1; i < 36; i++) {
 			dfa.add_state(i, true);
 		}
 		// all one-symbol tokens
@@ -47,10 +47,13 @@ public:
 		dfa.add_transition(token_to_int(Token::Kind::Divide), '=', token_to_int(Token::Kind::DivisionAssignment));
 		dfa.add_transition(token_to_int(Token::Kind::DirectAssignment), '=', token_to_int(Token::Kind::Equals));
 
-		// Handle identifiers as a set of chars/numbers
+		// Handle identifiers as a set of chars/numbers, preprocessor directives
 		for (char c = 'a'; c <= 'z'; c++) {
 			dfa.add_transition(0, c, token_to_int(Token::Kind::Identifier));
 			dfa.add_transition(token_to_int(Token::Kind::Identifier), c, token_to_int(Token::Kind::Identifier));
+
+			dfa.add_transition(token_to_int(Token::Kind::Hash), c, token_to_int(Token::Kind::PreprocessorDirectives));
+			dfa.add_transition(token_to_int(Token::Kind::PreprocessorDirectives), c, token_to_int(Token::Kind::PreprocessorDirectives));
 		}
 		for (char c = '0'; c <= '9'; c++) {
 			dfa.add_transition(token_to_int(Token::Kind::Identifier), c, token_to_int(Token::Kind::Identifier));
@@ -65,8 +68,8 @@ public:
 			dfa.add_transition(token_to_int(Token::Kind::IntegerLiteral), c, token_to_int(Token::Kind::IntegerLiteral));
 		}
 
-		std::vector<std::string> words =
-		{"alignas", "alignof", "and", "and_eq", "asm", "atomic_cancel",
+		std::vector<std::string> keywords_array =
+		{ "alignas", "alignof", "and", "and_eq", "asm", "atomic_cancel",
 		"atomic_commit", "atomic_noexcept", "auto", "bitand", "bitor", "bool",
 		"break", "case", "catch", "char", "char8_t", "char16_t", "char32_t",
 		"class", "compl", "concept", "const", "consteval", "constexpr",
@@ -82,8 +85,15 @@ public:
 		"thread_local", "throw", "true", "try", "typedef", "typeid",
 		"typename", "union", "unsigned", "using", "virtual", "void",
 		"volatile", "wchar_t", "while", "xor", "xor_eq" };
-		for (std::string word : words) {
+		for (std::string word : keywords_array) {
 			reserved_words.insert(word);
+		}
+
+		std::vector<std::string> preprocessor_directives_array = 
+		{"#if", "#elif", "#else", "#endif", "#ifdef", "#ifndef", "#define",
+	    "#undef", "#include", "#line", "#error", "#pragma" };
+		for (std::string word : preprocessor_directives_array) {
+			preprocessor_directives.insert(word);
 		}
 	}
 
@@ -102,8 +112,10 @@ private:
 	}
 	Token get_token_from_dfa(const char* start_lexeme, const char* end_lexeme);
 	std::optional<Token::Kind> check_if_reserved_word(std::string input);
+	std::optional<Token::Kind> check_if_preprocessor_directive(std::string input);
 
 	Trie reserved_words;
+	Trie preprocessor_directives;
 	const char* m_beg = nullptr;
 	DFA<char> dfa;
 };
