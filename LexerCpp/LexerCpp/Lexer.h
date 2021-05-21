@@ -10,10 +10,12 @@ class Lexer {
 public:
 	Lexer(const char* beg) : m_beg{ beg }, dfa{ 0, false } {
 		// Adding DFA state for each of the tokens
-		for (int i = 1; i < 36; i++) {
+		for (int i = 1; i < 37; i++) {
 			dfa.add_state(i, true);
 		}
 		dfa.add_state(token_to_int(Token::Kind::EndComment), false);
+		dfa.add_state(token_to_int(Token::Kind::CStyleCommentStart), true);
+		dfa.add_state(token_to_int(Token::Kind::CStyleCommentEnd), true);
 
 		// all one-symbol tokens
 		dfa.add_transition(0, '(', token_to_int(Token::Kind::LeftParen));
@@ -70,12 +72,19 @@ public:
 			dfa.add_transition(token_to_int(Token::Kind::IntegerLiteral), c, token_to_int(Token::Kind::IntegerLiteral));
 		}
 
-		// Handle comments
-		dfa.add_transition(0, '/', token_to_int(Token::Kind::Divide));
-		dfa.add_transition(token_to_int(Token::Kind::Divide), '/', token_to_int(Token::Kind::Comment));
-		dfa.add_transition(token_to_int(Token::Kind::Comment), '\n', token_to_int(Token::Kind::EndComment));
-		dfa.add_transition(token_to_int(Token::Kind::Comment), '\0', token_to_int(Token::Kind::EndComment));
-		dfa.add_any_transition(token_to_int(Token::Kind::Comment), token_to_int(Token::Kind::Comment));
+		// Handle C++ comments
+		dfa.add_transition(token_to_int(Token::Kind::Divide), '/', token_to_int(Token::Kind::CppStyleComment));
+		dfa.add_transition(token_to_int(Token::Kind::CppStyleComment), '\n', token_to_int(Token::Kind::EndComment));
+		dfa.add_transition(token_to_int(Token::Kind::CppStyleComment), '\0', token_to_int(Token::Kind::EndComment));
+		dfa.add_any_transition(token_to_int(Token::Kind::CppStyleComment), token_to_int(Token::Kind::CppStyleComment));
+
+		// Handle C comments
+		dfa.add_transition(token_to_int(Token::Kind::Divide), '*', token_to_int(Token::Kind::CStyleCommentStart));
+		dfa.add_any_transition(token_to_int(Token::Kind::CStyleCommentStart), token_to_int(Token::Kind::CStyleCommentStart));
+		dfa.add_transition(token_to_int(Token::Kind::CStyleCommentStart), '*', token_to_int(Token::Kind::CStyleCommentEnd));
+		dfa.add_any_transition(token_to_int(Token::Kind::CStyleCommentEnd), token_to_int(Token::Kind::CStyleCommentStart));
+		dfa.add_transition(token_to_int(Token::Kind::CStyleCommentEnd), '*', token_to_int(Token::Kind::CStyleCommentEnd));
+		dfa.add_transition(token_to_int(Token::Kind::CStyleCommentEnd), '/', token_to_int(Token::Kind::CStyleComment));
 
 
 		// Handle keywords, preprocessor directives
