@@ -15,6 +15,7 @@ public:
 	~DFA(void);
 	void add_state(int s, bool isfinal);
 	void add_transition(int src, T input, int dest);
+	void add_any_transition(int src, int dest);
 	bool is_accepting();
 	bool is_accepting(T inp);
 	void reset();
@@ -29,5 +30,6 @@ private:
 	set<int> m_states;
 	set<int> m_final_states;
 	map<pair<int, T>, int> m_transitions;
+	map<int, int> any_transitions;
 };
 

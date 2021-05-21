@@ -24,19 +24,30 @@ void DFA<T>::add_transition(int src, T input, int dest) {
 }
 
 template<typename T>
+void DFA<T>::add_any_transition(int src, int dest) {
+	any_transitions[src] = dest;
+}
+
+template<typename T>
 void DFA<T>::reset() {
 	m_state = m_initial;
 }
 
 template<typename T>
 int DFA<T>::input(T inp) {
+	// cases where the input matters (or if there are exclusions to 'any')
 	auto tr = make_pair(m_state, inp);
 	if (m_transitions.count(tr) > 0) {
 		auto it = m_transitions.find(tr);
 		return m_state = it->second;
-	} else {
-		return m_state = -1;
+	} 
+
+	// no matter what is the input, current state will be destination
+	if (any_transitions.find(m_state) != any_transitions.end()) {
+		return m_state = any_transitions[m_state];
 	}
+
+	return m_state = -1;
 }
 
 template<typename T>
@@ -53,6 +64,12 @@ bool DFA<T>::is_accepting(T inp)
 		auto it = m_transitions.find(tr);
 		return m_final_states.count(it->second) != 0;
 	}
+
+	// if the state is in any_transitions
+	if (any_transitions.find(m_state) != any_transitions.end()) {
+		return true;
+	}
+
 	else return false;
 }
 

@@ -47,7 +47,8 @@ public:
 		Pipe,
 		End,
 		Whitespace,
-		NewLine
+		NewLine,
+		EndComment,
 	};
 
 	static std::string toString(Kind kind) {
