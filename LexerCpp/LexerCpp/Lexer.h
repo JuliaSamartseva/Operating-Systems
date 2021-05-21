@@ -13,6 +13,8 @@ public:
 		for (int i = 1; i < 36; i++) {
 			dfa.add_state(i, true);
 		}
+		dfa.add_state(token_to_int(Token::Kind::EndComment), false);
+
 		// all one-symbol tokens
 		dfa.add_transition(0, '(', token_to_int(Token::Kind::LeftParen));
 		dfa.add_transition(0, ')', token_to_int(Token::Kind::RightParen));
@@ -47,7 +49,7 @@ public:
 		dfa.add_transition(token_to_int(Token::Kind::Divide), '=', token_to_int(Token::Kind::DivisionAssignment));
 		dfa.add_transition(token_to_int(Token::Kind::DirectAssignment), '=', token_to_int(Token::Kind::Equals));
 
-		// Handle identifiers as a set of chars/numbers, preprocessor directives
+		// Handle identifiers as a set of chars/numbers, preprocessor directives, comments
 		for (char c = 'a'; c <= 'z'; c++) {
 			dfa.add_transition(0, c, token_to_int(Token::Kind::Identifier));
 			dfa.add_transition(token_to_int(Token::Kind::Identifier), c, token_to_int(Token::Kind::Identifier));
@@ -68,6 +70,15 @@ public:
 			dfa.add_transition(token_to_int(Token::Kind::IntegerLiteral), c, token_to_int(Token::Kind::IntegerLiteral));
 		}
 
+		// Handle comments
+		dfa.add_transition(0, '/', token_to_int(Token::Kind::Divide));
+		dfa.add_transition(token_to_int(Token::Kind::Divide), '/', token_to_int(Token::Kind::Comment));
+		dfa.add_transition(token_to_int(Token::Kind::Comment), '\n', token_to_int(Token::Kind::EndComment));
+		dfa.add_transition(token_to_int(Token::Kind::Comment), '\0', token_to_int(Token::Kind::EndComment));
+		dfa.add_any_transition(token_to_int(Token::Kind::Comment), token_to_int(Token::Kind::Comment));
+
+
+		// Handle keywords, preprocessor directives
 		std::vector<std::string> keywords_array =
 		{ "alignas", "alignof", "and", "and_eq", "asm", "atomic_cancel",
 		"atomic_commit", "atomic_noexcept", "auto", "bitand", "bitor", "bool",
