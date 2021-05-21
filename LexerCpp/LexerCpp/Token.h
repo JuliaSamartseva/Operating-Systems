@@ -11,7 +11,9 @@ public:
 		//TODO: literals and symbolic constants
 		// preprocessor directives
 		PreprocessorDirectives,
-		//TODO: comments
+		// comments
+		CppStyleComment,
+		CStyleComment,
 		// keywords
 		Keyword,
 		// identifiers
@@ -43,12 +45,13 @@ public:
 		Semicolon,
 		SingleQuote,
 		DoubleQuote,
-		Comment,
 		Pipe,
 		End,
 		Whitespace,
 		NewLine,
 		EndComment,
+		CStyleCommentStart,
+		CStyleCommentEnd
 	};
 
 	static std::string toString(Kind kind) {
@@ -83,7 +86,8 @@ public:
 		case Kind::Semicolon: return "Semicolon";
 		case Kind::SingleQuote: return "Single Quote";
 		case Kind::DoubleQuote: return "Double Quote";
-		case Kind::Comment: return "Comment";
+		case Kind::CppStyleComment: return "C++ Style Comment";
+		case Kind::CStyleComment: return "C Style Comment";
 		case Kind::Pipe: return "Pipe";
 		case Kind::End: return "End";
 		case Kind::Whitespace: return "Whitespace";
