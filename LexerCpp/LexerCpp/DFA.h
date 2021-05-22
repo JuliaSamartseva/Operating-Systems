@@ -11,7 +11,8 @@ template<typename T>
 class DFA
 {
 public:
-	explicit DFA(int initial, bool isfinal);
+	DFA() : DFA(0, false) {}
+	DFA(int initial, bool isfinal);
 	~DFA(void);
 	void add_state(int s, bool isfinal);
 	void add_transition(int src, T input, int dest);

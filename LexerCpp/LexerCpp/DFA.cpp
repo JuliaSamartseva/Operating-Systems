@@ -1,5 +1,7 @@
 #include "DFA.h"
 
+
+
 template<typename T>
 DFA<T>::DFA(int initial, bool isfinal) {
 	this->m_initial = this->m_state = initial;
