@@ -152,6 +152,7 @@
     <ClCompile Include="DFA.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="LexerCpp.cpp" />
+    <ClCompile Include="Token.cpp" />
     <ClCompile Include="Trie.cpp" />
   </ItemGroup>
   <ItemGroup>
