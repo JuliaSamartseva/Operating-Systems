@@ -60,6 +60,13 @@ public:
 			dfa.add_transition(token_to_int(Token::Kind::Hash), c, token_to_int(Token::Kind::PreprocessorDirectives));
 			dfa.add_transition(token_to_int(Token::Kind::PreprocessorDirectives), c, token_to_int(Token::Kind::PreprocessorDirectives));
 		}
+		for (char c = 'A'; c <= 'Z'; c++) {
+			dfa.add_transition(0, c, token_to_int(Token::Kind::Identifier));
+			dfa.add_transition(token_to_int(Token::Kind::Identifier), c, token_to_int(Token::Kind::Identifier));
+
+			dfa.add_transition(token_to_int(Token::Kind::Hash), c, token_to_int(Token::Kind::PreprocessorDirectives));
+			dfa.add_transition(token_to_int(Token::Kind::PreprocessorDirectives), c, token_to_int(Token::Kind::PreprocessorDirectives));
+		}
 		for (char c = '0'; c <= '9'; c++) {
 			dfa.add_transition(token_to_int(Token::Kind::Identifier), c, token_to_int(Token::Kind::Identifier));
 		}
