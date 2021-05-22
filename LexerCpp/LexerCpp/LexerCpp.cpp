@@ -2,24 +2,28 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "Lexer.h"
 
 int main()
 {
-
-    auto code = "int #defdfjdhjkf int error = 2";
+    ifstream file("cpp_code.txt");
     std::cout << "List of tokens: \n";
-    Lexer lex(code);
+    std::string code((std::istreambuf_iterator<char>(file)),
+        std::istreambuf_iterator<char>());
+    Lexer lex(code.c_str());
     for (auto token = lex.next();
         not token.is(Token::Kind::End);
         token = lex.next()) {
         if (token.is(Token::Kind::Invalid)) {
             std::cout << "Found invalid token";
             break;
-        } else {
+        }
+        else {
             std::cout << "(" << Token::toString(token.kind()) << ", \"" << token.lexeme()
                 << "\")\n";
         }
     }
+    
 }

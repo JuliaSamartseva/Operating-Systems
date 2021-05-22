@@ -1,0 +1,15 @@
+// cpp comment
+
+#define WIDTH 3
+
+int main() {
+    /* int i = 0 c comment
+    */
+    
+    int a = 9.234;
+    if (a == 3) {
+        string b = "hello";
+    }
+
+    return 0;
+}
