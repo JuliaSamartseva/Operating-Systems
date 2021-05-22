@@ -8,13 +8,18 @@
 int main()
 {
 
-    auto code = "/* \n hello = 3 23 */ = 3";
+    auto code = "int #defdfjdhjkf int error = 2";
     std::cout << "List of tokens: \n";
     Lexer lex(code);
     for (auto token = lex.next();
-        not token.is_one_of(Token::Kind::End, Token::Kind::Invalid);
+        not token.is(Token::Kind::End);
         token = lex.next()) {
-        std::cout << "(" << Token::toString(token.kind()) << ", \"" << token.lexeme()
-            << "\")\n";
+        if (token.is(Token::Kind::Invalid)) {
+            std::cout << "Found invalid token";
+            break;
+        } else {
+            std::cout << "(" << Token::toString(token.kind()) << ", \"" << token.lexeme()
+                << "\")\n";
+        }
     }
 }

@@ -8,7 +8,8 @@ public:
 		// numeric constants
 		IntegerLiteral,
 		FloatingPointLiteral,
-		//TODO: literals and symbolic constants
+		//literals and symbolic constants
+		StringLiteral,
 		// preprocessor directives
 		PreprocessorDirectives,
 		// comments
@@ -51,7 +52,8 @@ public:
 		NewLine,
 		EndComment,
 		CStyleCommentStart,
-		CStyleCommentEnd
+		CStyleCommentEnd,
+		StringLiteralStart,
 	};
 
 	static std::string toString(Kind kind) {
@@ -94,6 +96,7 @@ public:
 		case Kind::NewLine: return "New line";
 		case Kind::Keyword: return "Keyword";
 		case Kind::PreprocessorDirectives: return "Preprocessor directive";
+		case Kind::StringLiteral: return "String Literal";
 		default: return "[unknown token]";
 		}
 	}
