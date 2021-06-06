@@ -22,8 +22,6 @@ public:
 	void reset();
 	int input(T inp);
 	int state();
-
-
 private:
 	int last_state;
 	int m_initial;

@@ -9,13 +9,10 @@ Lexer::Lexer(const char* beg) {
 	this->dfa = DFA<char>(0, false);
 
 	// Adding DFA state for each of the tokens
-	for (int i = 1; i < 38; i++) {
+	for (int i = 1; i <= Token::states_num; i++) {
 		dfa.add_state(i, true);
 	}
 	dfa.add_state(token_to_int(Token::Kind::EndComment), false);
-	dfa.add_state(token_to_int(Token::Kind::CStyleCommentStart), true);
-	dfa.add_state(token_to_int(Token::Kind::CStyleCommentEnd), true);
-	dfa.add_state(token_to_int(Token::Kind::StringLiteralStart), true);
 
 	// all one-symbol tokens
 	dfa.add_transition(0, '(', token_to_int(Token::Kind::LeftParen));
@@ -95,8 +92,12 @@ Lexer::Lexer(const char* beg) {
 
 	// Handle String literals
 	dfa.add_any_transition(token_to_int(Token::Kind::DoubleQuote), token_to_int(Token::Kind::StringLiteralStart));
+	dfa.add_transition(token_to_int(Token::Kind::StringLiteralStart), '\n', token_to_int(Token::Kind::Invalid));
+	dfa.add_transition(token_to_int(Token::Kind::StringLiteralStart), '\\', token_to_int(Token::Kind::EscapeNewLine));
+	dfa.add_transition(token_to_int(Token::Kind::EscapeNewLine), '\n', token_to_int(Token::Kind::StringLiteralStart));
 	dfa.add_any_transition(token_to_int(Token::Kind::StringLiteralStart), token_to_int(Token::Kind::StringLiteralStart));
 	dfa.add_transition(token_to_int(Token::Kind::StringLiteralStart), '\"', token_to_int(Token::Kind::StringLiteral));
+	dfa.add_any_transition(token_to_int(Token::Kind::Invalid), token_to_int(Token::Kind::Invalid));
 
 	// Handle keywords, preprocessor directives
 	std::vector<std::string> keywords_array =
@@ -174,6 +175,10 @@ Token Lexer::get_token_from_dfa(const char* start_lexeme, const char* end_lexeme
             return Token(*kind, start_lexeme, end_lexeme);
         }
     }
+
+	if ((Token::Kind)dfa.state() == Token::Kind::StringLiteralStart || (Token::Kind)dfa.state() == Token::Kind::Hash)
+		return Token(Token::Kind::Invalid, start_lexeme, end_lexeme);
+
     return Token((Token::Kind)dfa.state(), start_lexeme, end_lexeme);
 }
 
