@@ -162,6 +162,15 @@ bool Lexer::is_end() {
     return *m_beg == '\0';
 }
 
+bool Lexer::contains_only_ascii(string s) {
+	for (auto c : s) {
+		if (static_cast<unsigned char>(c) > 127) {
+			return false;
+		}
+	}
+	return true;
+}
+
 Token Lexer::get_token_from_dfa(const char* start_lexeme, const char* end_lexeme) {
     if ((Token::Kind)dfa.state() == Token::Kind::PreprocessorDirectives) {
         std::string_view word = string_view(start_lexeme, std::distance(start_lexeme, end_lexeme));
@@ -178,6 +187,9 @@ Token Lexer::get_token_from_dfa(const char* start_lexeme, const char* end_lexeme
     }
 
 	if ((Token::Kind)dfa.state() == Token::Kind::StringLiteralStart || (Token::Kind)dfa.state() == Token::Kind::Hash)
+		return Token(Token::Kind::Invalid, start_lexeme, end_lexeme);
+
+	if ((Token::Kind)dfa.state() == Token::Kind::StringLiteral && !contains_only_ascii(std::string(start_lexeme, std::distance(start_lexeme, end_lexeme)))) 
 		return Token(Token::Kind::Invalid, start_lexeme, end_lexeme);
 
     return Token((Token::Kind)dfa.state(), start_lexeme, end_lexeme);

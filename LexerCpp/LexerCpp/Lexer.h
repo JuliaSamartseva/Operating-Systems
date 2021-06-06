@@ -1,4 +1,6 @@
 #pragma once
+
+#define _HAS_STD_BYTE 0
 #include "Token.h"
 #include "DFA.h"
 #include "Trie.h"
@@ -18,6 +20,7 @@ private:
 	char get();
 	bool current_not_null();
 	bool is_end();
+	bool contains_only_ascii(string s);
 	Token get_token_from_dfa(const char* start_lexeme, const char* end_lexeme);
 	std::optional<Token::Kind> check_if_reserved_word(std::string input);
 	std::optional<Token::Kind> check_if_preprocessor_directive(std::string input);

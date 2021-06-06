@@ -1,11 +1,11 @@
 #define
 
 int main() {
-        string b = "Test \
+        string b = "Testы \
 multiple lines";
 }
 
-@
+\@
 
 # define
 
