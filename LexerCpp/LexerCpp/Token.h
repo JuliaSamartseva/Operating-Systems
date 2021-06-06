@@ -26,6 +26,10 @@ public:
 		SubtractionAssignment,
 		MultiplicationAssignment,
 		DivisionAssignment,
+		Plus,
+		Minus,
+		Multiply,
+		Divide,
 		// punctuation marks
 		LeftParen,
 		RightParen,
@@ -35,10 +39,6 @@ public:
 		RightCurly,
 		LessThan,
 		GreaterThan,
-		Plus,
-		Minus,
-		Multiply,
-		Divide,
 		Hash,
 		Dot,
 		Comma,
@@ -50,11 +50,14 @@ public:
 		End,
 		Whitespace,
 		NewLine,
-		EndComment,
 		CStyleCommentStart,
 		CStyleCommentEnd,
 		StringLiteralStart,
+		EscapeNewLine,
+		EndComment,
 	};
+
+	static const int states_num = 41;
 
 	static std::string toString(Kind kind);
 

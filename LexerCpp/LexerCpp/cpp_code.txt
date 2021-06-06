@@ -1,15 +1,9 @@
-// cpp comment
-
-#define WIDTH 3
+#define
 
 int main() {
-    /* int i = 0 c comment
-    */
-    
-    int a = 9.234;
-    if (a == 3) {
-        string b = "hello";
-    }
-
-    return 0;
+        string b = "Test \
+multiple lines";
 }
+
+# define
+
