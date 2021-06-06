@@ -115,7 +115,7 @@ Lexer::Lexer(const char* beg) {
 		"return", "short", "signed", "sizeof", "static", "static_assert",
 		"static_cast", "struct", "switch", "synchronized", "template", "this",
 		"thread_local", "throw", "true", "try", "typedef", "typeid",
-		"typename", "union", "unsigned", "using", "virtual", "void",
+		"typename", "union", "unsigned", "using", "virtual", "void",	
 		"volatile", "wchar_t", "while", "xor", "xor_eq" };
 	for (std::string word : keywords_array) {
 		reserved_words.insert(word);
@@ -138,7 +138,8 @@ Token Lexer::next() {
             // Found token, returning the result.
             get();
             return get_token_from_dfa(start_lexeme, m_beg);
-        }
+		}
+		else if (!dfa.is_accepting()) return Token(Token::Kind::Invalid, start_lexeme, m_beg);
         get();
     }
 
